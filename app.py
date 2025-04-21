@@ -1,9 +1,11 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 import os
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from datetime import timedelta
+from datetime import timedelta ,datetime
+import pandas as pd
+from werkzeug.utils import secure_filename
 
 # Load environment variables
 load_dotenv()
@@ -25,7 +27,8 @@ def create_app(test_config=None):
         DATABASE_URI=os.environ.get('DATABASE_URI', 'sqlite:///app.db'),
         DEBUG=os.environ.get('DEBUG', 'False') == 'True',
         JWT_SECRET_KEY=os.environ.get('JWT_SECRET_KEY', os.environ.get('SECRET_KEY', 'dev')),
-        JWT_ACCESS_TOKEN_EXPIRES=timedelta(seconds=int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES', 3600)))
+        JWT_ACCESS_TOKEN_EXPIRES=timedelta(seconds=int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES', 3600))),
+        UPLOAD_FOLDER=os.environ.get('UPLOAD_FOLDER', 'dev')
     )
     
     if test_config is None:

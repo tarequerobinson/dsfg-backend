@@ -1,14 +1,30 @@
-from flask import Blueprint, request, jsonify, current_app, session, make_response
+from flask import Blueprint, request, jsonify, current_app, session, make_response, g
 from werkzeug.security import check_password_hash
 import jwt
+import os
+import pandas as pd
 from datetime import datetime, timedelta
 from functools import wraps
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
+from werkzeug.utils import secure_filename
 
 from models.user import User, db
-from models.portfolio import Portfolio, FST
+from models.portfolio import Portfolio
+from models.fst import FST
+from models.transactions import Transactions
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
+UPLOAD_FOLDER = "uploads"
+ALLOWED_EXTENSIONS = {'csv'}
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def parse_date(date_str):
+    try:
+        return datetime.strptime(date_str, "%d/%m/%Y").date()
+    except Exception:
+        return None
 
 # Authentication decorator
 def token_required(f):
@@ -30,41 +46,17 @@ def token_required(f):
             # Decode the token
             data = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=["HS256"])
             current_user = User.query.filter_by(id=data['user_id']).first()
+            user_portfolio = Portfolio.query.filter_by(portfolio_id=data['portfolio']).first()
+
+            if not current_user:
+                return jsonify({'message': 'User not found!'}), 404
+
         except:
             return jsonify({'message': 'Token is invalid!'}), 401
             
-        return f(current_user, *args, **kwargs)
+        return f(current_user, user_portfolio, *args, **kwargs)
     
     return decorated
-
-@auth_bp.route('/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    
-    # Check if required fields are present
-    if not data or not data.get('username') or not data.get('email') or not data.get('password'):
-        return jsonify({'message': 'Missing required fields'}), 400
-    
-    # Check if user already exists
-    if User.query.filter_by(username=data['username']).first():
-        return jsonify({'message': 'Username already exists'}), 409
-    
-    if User.query.filter_by(email=data['email']).first():
-        return jsonify({'message': 'Email already exists'}), 409
-    
-    # Create new user
-    new_user = User(
-        username=data['username'],
-        email=data['email'],
-        password=data['password'],
-        phonenumber=data.get('phonenumber')
-    )
-    
-    # Add user to database
-    db.session.add(new_user)
-    db.session.commit()
-    
-    return jsonify({'message': 'User registered successfully'}), 201
 
 @auth_bp.route('/signup', methods=['POST'])
 def signup():
@@ -85,21 +77,33 @@ def signup():
         password=data['password'],
         phonenumber=data.get('phonenumber')
     )
-    
+
     # Add user to database
     db.session.add(new_user)
     db.session.commit()
-    
+
+    user = User.query.filter_by(email=data['email']).first()
+    new_portfolio = Portfolio(
+        user_id=user.id,
+        real_estate_value=0,
+        stock_value=0,
+        total_value=0,
+        profit_loss=0
+    )
+    db.session.add(new_portfolio)
+    db.session.commit()
+
     return jsonify({'message': 'User registered successfully'}), 201
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     
-    if not data or not data.get('username') or not data.get('password'):
+    if not data or not data.get('email') or not data.get('password'):
         return jsonify({'message': 'Missing username or password'}), 400
     
-    user = User.query.filter_by(username=data['username']).first()
+    user = User.query.filter_by(email=data['email']).first()
+    portfolio = Portfolio.query.filter_by(user_id=user.id).first()
     
     if not user:
         return jsonify({'message': 'User not found'}), 404
@@ -112,6 +116,7 @@ def login():
         # Generate token
         token = jwt.encode({
             'user_id': user.id,
+            'portfolio': portfolio.portfolio_id,
             'exp': datetime.utcnow() + timedelta(hours=24)
         }, current_app.config['SECRET_KEY'], algorithm="HS256")
         
@@ -122,30 +127,6 @@ def login():
         }), 200
     
     return jsonify({'message': 'Invalid password'}), 401
-
-@auth_bp.route('/signin', methods=['POST'])
-def signin():
-    data = request.get_json()
-    
-    if not data or not data.get('email') or not data.get('password'):
-        return jsonify({'message': 'Missing email or password'}), 400
-    
-    user = User.query.filter_by(email=data['email']).first()
-    
-    if not user:
-        return jsonify({'message': 'User not found'}), 404
-    
-    if user.check_password(data['password']):
-        # Update last login time
-        user.last_login = datetime.utcnow()
-        db.session.commit()
-        
-        # Generate token using flask-jwt-extended
-        access_token = create_access_token(identity=str(user.id))
-        
-        return jsonify(access_token=access_token), 200
-    
-    return jsonify({'message': 'Invalid credentials'}), 401
 
 @auth_bp.route('/logout', methods=['POST'])
 @token_required
@@ -160,9 +141,9 @@ def get_user_profile(current_user):
     return jsonify(current_user.to_dict()), 200
 
 @auth_bp.route('/submit', methods=['POST'])
-@jwt_required()
+@token_required
 def submit():
-    user_id = get_jwt_identity()
+    user_id = g.current_user
     
     if not user_id:
         return jsonify({"message": "User ID not found in token"}), 401
@@ -262,11 +243,11 @@ def finance():
     return jsonify(dashboard_data), 200
 
 @auth_bp.route('/display', methods=["GET"])
-@jwt_required()
-def display():
-    current_user_id = get_jwt_identity()
+@token_required
+def display(current_user):
+    user_id = current_user.id
 
-    user = User.query.filter_by(id=current_user_id).first()
+    user = User.query.filter_by(id=user_id).first()
     if not user:
         return jsonify({"message": "User Not Found"}), 400
 
@@ -279,9 +260,9 @@ def display():
     return jsonify(update_data), 200
 
 @auth_bp.route('/update', methods=["POST"])
-@jwt_required()
-def update():
-    current_user_id = get_jwt_identity()
+@token_required
+def update(current_user):
+    current_user_id = current_user.id
     user = User.query.filter_by(id=current_user_id).first()
     if not user: 
         return jsonify({"message": "User Not Found"}), 400
@@ -303,3 +284,50 @@ def update():
     db.session.commit()
 
     return jsonify({"message": "User Information Updated Successfully"}), 201
+
+@auth_bp.route('/upload', methods=['POST'])
+@token_required
+def upload_csv(current_user, user_portfolio):
+    portfolio_id = user_portfolio.portfolio_id
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+
+    if file and allowed_file(file.filename):
+        os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+        filename = secure_filename(file.filename)
+        filepath = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(filepath)
+
+        df = pd.read_csv(filepath)
+        df['ORDER DATE'] = df['ORDER DATE'].apply(parse_date)
+
+        for _, row in df.iterrows():
+            try:
+                order = Transactions(
+                    portfolio_id=portfolio_id, 
+                    order_date=row['ORDER DATE'],
+                    equity_order_no=int(row['EQUITY ORDER NO']),
+                    status=row['STATUS'],
+                    stock_exchange_code=row['STOCK EXCHANGE CODE'],
+                    currency=row['CURRENCY'],
+                    equity_symbol=row['EQUITY SYMBOL'],
+                    order_type=row['ORDER TYPE'],
+                    quantity=int(row['QUANTITY']),
+                    average_fill_price=float(row['AVERAGE FILL PRICE']),
+                    estimated_value=float(row['ESTIMATED VALUE']),
+                    time_in_force=row['TIME IN FORCE'],
+                    transaction_type=row['TRANSACTION TYPE'],
+                    limit_price=float(row['LIMIT PRICE']),
+                )
+                db.session.add(order)
+            except Exception as e:
+                print(f"Skipping row: {e}")
+        db.session.commit()
+
+        return jsonify({'message': f'{filename} uploaded and processed successfully'}), 200
+
+    return jsonify({'error': 'Invalid file type'}), 400
