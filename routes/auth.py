@@ -1,9 +1,20 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from webdriver_manager.chrome import ChromeDriverManager
+import time
+import sys
+
 from flask import Blueprint, request, jsonify, current_app, session, make_response, g
 from werkzeug.security import check_password_hash
 import jwt
 import os
 import pandas as pd
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 from functools import wraps
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
 from werkzeug.utils import secure_filename
@@ -12,11 +23,166 @@ from models.user import User, db
 from models.portfolio import Portfolio
 from models.fst import FST
 from models.transactions import Transactions
+from models.jse_prices import JSE
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {'csv'}
 
+def get_filtered_equity_orders():
+    try:
+        # Connect to your PostgreSQL database
+        conn = psycopg2.connect(
+            host="localhost",        # e.g., "localhost"
+            dbname="postgres",    # e.g., "equity_db"
+            user="postgres",
+            password="admin",
+            port="5432"         # default is 5432
+        )
+
+        # Define the SQL query
+        query = """
+            SELECT 
+                "equity_symbol" AS equity_symbol,
+                "quantity" AS quantity,
+                "transaction_type" AS transaction_type,
+                CASE 
+                    WHEN "order_type" = 'MARKET' THEN "average_fill_price"
+                    WHEN "order_type" = 'LIMIT' THEN "limit_price"
+                END AS value
+            FROM transactions
+            WHERE "status" = 'FILLED' AND "portfolio_id" = 3;
+        """
+
+        # Execute the query and load into a DataFrame
+        df = pd.read_sql_query(query, conn)
+
+        stock_names = []
+
+        for _, row in df.iterrows():
+            print("This is each line: ", row)
+
+            if row['equity_symbol'] not in [s[0] for s in stock_names]:
+                stock_names.append([row['equity_symbol'], row["quantity"], 0.0])
+            
+            if row["transaction_type"] == "BUY":
+                print("They bought something.")
+                for i in stock_names:
+                    if row["equity_symbol"] == i[0]:
+                        i[1] += row["quantity"] 
+            elif row["transaction_type"] == "SELL":
+                print("They sold something.")
+                for i in stock_names:
+                    if row["equity_symbol"] == i[0]:
+                        i[1] -= row["quantity"] 
+
+            query = """
+                SELECT 
+                    "name" AS name,
+                    "close_price" AS close_price
+                FROM jse_prices
+                WHERE "symbol" = %s;
+            """
+
+            # Execute the query and load into a DataFrame
+            i[2] = pd.read_sql_query(query, conn, params=(i[0],))
+        
+
+        print("This is stock names: ", stock_names)
+
+        # Close the connection
+        conn.close()
+
+        return stock_names
+
+    except Exception as e:
+        print("Error while connecting to PostgreSQL:", e)
+        return None
+
+def get_all_jse_closing_prices(debug=False):
+    url = "https://www.jamstockex.com/trading/trade-quotes"
+    
+    if debug:
+        print(f"Opening URL: {url}")
+
+    # Set up Chrome options
+    chrome_options = Options()
+    chrome_options.add_argument("--headless=new")  # Modern headless mode
+    chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--window-size=1920,1080")  # Set a larger window size
+    chrome_options.add_argument("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+    
+    # Initialize the driver with improved error handling
+    try:
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    except Exception as e:
+        print(f"Error initializing Chrome driver: {e}")
+        print("Make sure you have Chrome installed and ChromeDriver is compatible with your Chrome version.")
+        sys.exit(1)
+    
+    try:
+        # Navigate to the page
+        driver.get(url)
+        if debug:
+            print("Page loaded. Waiting for table...")
+        
+        # Try to find any table on the page
+        try:
+            tables = WebDriverWait(driver, 0.5).until(
+                EC.presence_of_all_elements_located((By.TAG_NAME, "table"))
+            )
+            table = tables[2]
+        except TimeoutException:
+            print("Couldn't find tables")
+
+        # Extract data from the table
+        rows = table.find_elements(By.TAG_NAME, "tr")
+        
+        # Proceed with data extraction
+        data = []
+        for row in rows[1:]:  # Skip the header row
+            try:
+                names = row.find_elements(By.TAG_NAME, "a")
+                close_price = row.find_elements(By.TAG_NAME, "td")
+                
+                # Debug the column content
+                if debug and names and close_price:
+                    for name in names:
+                        #for j in close_price:
+                            company_name = name.get_attribute('title')
+                            company_abb = name.get_attribute('innerHTML').strip().replace("\n", "")
+                            company_price = close_price[3].get_attribute('innerHTML').strip().replace("\n", "")
+                            comp_info = [company_name, company_abb, float(company_price)]
+                    name = comp_info[0]
+                    symbol = comp_info[1]
+                    close = comp_info[2]
+                    data.append((name, symbol, close))
+
+            except Exception as e:
+                if debug:
+                    print(f"Error processing row: {e}")
+                continue
+        
+        # Create DataFrame from collected data
+        df = pd.DataFrame(data, columns=["Name", "Symbol", "Close"])
+        df["trade_date"] = date.today().isoformat()
+        
+        return df
+    
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return pd.DataFrame(columns=["name", "Symbol", "Close", "trade_date"])
+    
+    finally:
+        # Always close the driver
+        try:
+            driver.quit()
+            if debug:
+                print("Browser closed")
+        except Exception as e:
+            print(f"Error closing browser: {e}")
+            
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -119,6 +285,56 @@ def login():
             'portfolio': portfolio.portfolio_id,
             'exp': datetime.utcnow() + timedelta(hours=24)
         }, current_app.config['SECRET_KEY'], algorithm="HS256")
+
+        df = get_all_jse_closing_prices(debug=True)
+
+        if not df.empty:
+            print("This is df: ", df)
+
+            JSE.query.delete()
+            db.session.commit()
+
+            for _, row in df.iterrows():
+                try:
+                    stocks = JSE(
+                        name = row['Name'], 
+                        symbol = row['Symbol'], 
+                        close_price = row['Close']
+                    )
+                    db.session.add(stocks)
+                except Exception as e:
+                    print(f"Skipping row: {e}")
+            db.session.commit()
+        # os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+        # filename = secure_filename(file.filename)
+        # filepath = os.path.join(UPLOAD_FOLDER, filename)
+        # file.save(filepath)
+
+        # df = pd.read_csv(filepath)
+        # df['ORDER DATE'] = df['ORDER DATE'].apply(parse_date)
+
+        # for _, row in df.iterrows():
+        #     try:
+        #         order = Transactions(
+        #             portfolio_id=portfolio_id, 
+        #             order_date=row['ORDER DATE'],
+        #             equity_order_no=int(row['EQUITY ORDER NO']),
+        #             status=row['STATUS'],
+        #             stock_exchange_code=row['STOCK EXCHANGE CODE'],
+        #             currency=row['CURRENCY'],
+        #             equity_symbol=row['EQUITY SYMBOL'],
+        #             order_type=row['ORDER TYPE'],
+        #             quantity=int(row['QUANTITY']),
+        #             average_fill_price=float(row['AVERAGE FILL PRICE']),
+        #             estimated_value=float(row['ESTIMATED VALUE']),
+        #             time_in_force=row['TIME IN FORCE'],
+        #             transaction_type=row['TRANSACTION TYPE'],
+        #             limit_price=float(row['LIMIT PRICE']),
+        #         )
+        #         db.session.add(order)
+        #     except Exception as e:
+        #         print(f"Skipping row: {e}")
+        # db.session.commit()
         
         return jsonify({
             'message': 'Login successful',
@@ -214,6 +430,9 @@ def submit():
 def finance():
     current_user_id = get_jwt_identity()  # Get the user ID from JWT token
     
+    df = get_filtered_equity_orders()
+
+    print("This is df: ", df)
     # Fetch user portfolio data
     portfolio = Portfolio.query.filter_by(user_id=current_user_id).first()
     if not portfolio:
@@ -331,3 +550,4 @@ def upload_csv(current_user, user_portfolio):
         return jsonify({'message': f'{filename} uploaded and processed successfully'}), 200
 
     return jsonify({'error': 'Invalid file type'}), 400
+
