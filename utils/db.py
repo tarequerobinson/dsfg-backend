@@ -3,7 +3,7 @@ from models.user import db
 
 def init_db(app):
     # Configure SQLAlchemy
-    app.config['SQLALCHEMY_DATABASE_URI'] = app.config['DATABASE_URI']
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:claymaster3@localhost:5432/dsfg_db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     # Initialize the database with the app

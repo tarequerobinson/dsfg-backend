@@ -6,8 +6,8 @@ Werkzeug==2.3.7
 
 # Database drivers
 # Uncomment the one you need
-psycopg2-binary==2.9.7  # PostgreSQL driver
-# mysqlclient==2.2.0      # MySQL driver
+#psycopg2-binary==2.9.7
+mysqlclient==2.2.0
 
 # Authentication
 PyJWT==2.8.0
