@@ -6,6 +6,7 @@ from flask_jwt_extended import JWTManager
 from datetime import timedelta ,datetime
 import pandas as pd
 from werkzeug.utils import secure_filename
+from routes.sentiment import sentiment_bp, init_sentiment_model
 
 # Load environment variables
 load_dotenv()
@@ -49,10 +50,12 @@ def create_app(test_config=None):
 
     # Initialize JWT
     jwt = JWTManager(app)
+    init_sentiment_model()
     
     # Register blueprints
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
+    app.register_blueprint(sentiment_bp)
 
     # Initialize database
     from utils.db import init_db

@@ -1,31 +1,101 @@
 id,text,sentiment
-1,"""The company reported strong quarterly earnings, exceeding market expectations with a 15% growth in revenue.""",1
-2,"""Global markets experienced a significant downturn today, with major indices falling sharply amid economic uncertainty.""",0
-3,"""A breakthrough medical research team has developed a promising new treatment for a rare genetic disorder.""",1
-4,"""Tensions escalate in the ongoing geopolitical conflict, raising concerns about potential military intervention.""",0
-5,"""Local community celebrates the successful completion of a major infrastructure project improving city transportation.""",1
-6,"""Economic analysts warn of potential recession as unemployment rates continue to rise and consumer spending declines.""",0
-7,"""Renewable energy sector sees massive investment, with several countries committing to ambitious carbon reduction goals.""",1
-8,"""Devastating natural disaster leaves thousands homeless and causes extensive damage to critical infrastructure.""",0
-9,"""Tech giant launches innovative product that could revolutionize artificial intelligence applications in everyday life.""",1
-10,"""Political scandal erupts as leaked documents reveal potential corruption in government procurement processes.""",0
-11,"""Scientific breakthrough in clean energy promises to reduce carbon emissions and combat climate change.""",1
-12,"""Stock market volatility creates uncertainty for investors as global economic challenges persist.""",0
-13,"""Humanitarian efforts successfully provide aid to regions affected by prolonged conflict and economic hardship.""",1
-14,"""Cybersecurity breach exposes sensitive user data, raising serious concerns about digital privacy and protection.""",0
-15,"""Groundbreaking medical research offers hope for more effective cancer treatment with fewer side effects.""",1
-16,"""Economic sanctions impact international trade, leading to potential long-term economic challenges.""",0
-17,"""Innovative educational technology proves effective in improving learning outcomes for students worldwide.""",1
-18,"""Environmental report highlights critical challenges in addressing global climate change and biodiversity loss.""",0
-19,"""Successful space mission demonstrates significant advancements in astronomical research and technology.""",1
-20,"""Ongoing labor disputes threaten economic stability and worker rights in multiple industries.""",0
-21,"""Positive economic indicators suggest potential recovery and growth in key market sectors.""",1
-22,"""Tragic accident reveals serious safety concerns in industrial manufacturing processes.""",0
-23,"""Breakthrough in renewable energy technology could potentially transform global energy consumption patterns.""",1
-24,"""Geopolitical tensions continue to create uncertainty in international diplomatic relations.""",0
-25,"""Successful urban regeneration project transforms struggling neighborhood into a vibrant community hub.""",1
-26,"""Economic downturn leads to significant job losses and increased financial hardship for many families.""",0
-27,"""Innovative startup develops sustainable solution to address critical environmental challenges.""",1
-28,"""Complex legal battle reveals systemic issues in corporate governance and regulatory oversight.""",0
-29,"""Medical research team makes significant progress in understanding and treating neurological disorders.""",1
-30,"""Ongoing global conflict raises serious concerns about international peace and security.""",0
+1,"The company reported strong quarterly earnings, exceeding market expectations with a 15% growth in revenue.",1
+2,"Global markets experienced a significant downturn today, with major indices falling sharply amid economic uncertainty.",0
+3,"A breakthrough medical research team has developed a promising new treatment for a rare genetic disorder.",1
+4,"Tensions escalate in the ongoing geopolitical conflict, raising concerns about potential military intervention.",0
+5,"Local community celebrates the successful completion of a major infrastructure project improving city transportation.",1
+6,"Economic analysts warn of potential recession as unemployment rates continue to rise and consumer spending declines.",0
+7,"Renewable energy sector sees massive investment, with several countries committing to ambitious carbon reduction goals.",1
+8,"Devastating natural disaster leaves thousands homeless and causes extensive damage to critical infrastructure.",0
+9,"Tech giant launches innovative product that could revolutionize artificial intelligence applications in everyday life.",1
+10,"Political scandal erupts as leaked documents reveal potential corruption in government procurement processes.",0
+11,"Scientific breakthrough in clean energy promises to reduce carbon emissions and combat climate change.",1
+12,"Stock market volatility creates uncertainty for investors as global economic challenges persist.",0
+13,"Humanitarian efforts successfully provide aid to regions affected by prolonged conflict and economic hardship.",1
+14,"Cybersecurity breach exposes sensitive user data, raising serious concerns about digital privacy and protection.",0
+15,"Groundbreaking medical research offers hope for more effective cancer treatment with fewer side effects.",1
+16,"Economic sanctions impact international trade, leading to potential long-term economic challenges.",0
+17,"Innovative educational technology proves effective in improving learning outcomes for students worldwide.",1
+18,"Environmental report highlights critical challenges in addressing global climate change and biodiversity loss.",0
+19,"Successful space mission demonstrates significant advancements in astronomical research and technology.",1
+20,"Ongoing labor disputes threaten economic stability and worker rights in multiple industries.",0
+21,"Positive economic indicators suggest potential recovery and growth in key market sectors.",1
+22,"Tragic accident reveals serious safety concerns in industrial manufacturing processes.",0
+23,"Breakthrough in renewable energy technology could potentially transform global energy consumption patterns.",1
+24,"Geopolitical tensions continue to create uncertainty in international diplomatic relations.",0
+25,"Successful urban regeneration project transforms struggling neighborhood into a vibrant community hub.",1
+26,"Economic downturn leads to significant job losses and increased financial hardship for many families.",0
+27,"Innovative startup develops sustainable solution to address critical environmental challenges.",1
+28,"Complex legal battle reveals systemic issues in corporate governance and regulatory oversight.",0
+29,"Medical research team makes significant progress in understanding and treating neurological disorders.",1
+30,"Ongoing global conflict raises serious concerns about international peace and security.",0
+31,"Tech giant InnovateCorp beats Q4 earnings estimates by 15%, shares surge 8% in pre-market trading",1
+32,"Global Pharma faces FDA rejection for key drug candidate, stock plunges 22%",-1
+33,"EnergyCo announces quarterly dividend of $0.45 per share, in line with expectations",0
+34,"Retail leader MarketMasters reports record holiday sales, raises full-year guidance",1
+35,"Auto manufacturer VoltMotors recalls 250,000 electric vehicles over battery concerns",-1
+36,"Federal Reserve announces 0.25% interest rate hike as expected",0
+37,"BioHealth receives breakthrough therapy designation for cancer treatment, shares jump 18%",1
+38,"E-Commerce giant GlobalCart discloses data breach affecting 2M users, stock drops 12%",-1
+39,"Industrial giant SteelWorks appoints new CFO following retirement announcement",0
+40,"StreamFlix subscribers surpass 250M, stock hits all-time high",1
+41,"AeroSystems loses $4B defense contract to competitor, shares fall 15%",-1
+42,"Consumer Bank Corp completes acquisition of regional credit union",0
+43,"GreenEnergy Inc. secures $2B government contract for solar farm project",1
+44,"OilCo reports massive Gulf Coast refinery fire, production halted indefinitely",-1
+45,"National Central Bank maintains current monetary policy stance",0
+46,"ChipMaker Tech announces revolutionary 2nm semiconductor breakthrough",1
+47,"Pharma giant MediCare recalls contaminated blood pressure medication nationwide",-1
+48,"Transportation Dept approves merger of RailNet and CargoExpress",0
+49,"VirtualReality Co. partners with Apple for next-gen headset development",1
+50,"Food safety scandal hits FarmFresh, shares suspended after 30% drop",-1
+51,"Tech giant NextGenAI announces breakthrough in quantum computing, shares soar 25%",1
+52,"Pharma leader BioHeal receives FDA approval for new Alzheimer's drug",1
+53,"Retail chain MegaMart reports worst holiday sales in decade, stock plummets",-1
+54,"Central bank keeps interest rates unchanged as inflation stabilizes",0
+55,"Solar energy firm SunVista lands $3B government renewable energy contract",1
+56,"Airlines United cuts profit forecast due to rising fuel costs",-1
+57,"Automaker TurboCars reports 5% year-over-year sales growth",0
+58,"Streaming service ViewFlix exceeds subscriber targets, stock hits record high",1
+59,"Oil company PetroGlobal reports major pipeline leak, shares drop 18%",-1
+60,"Banking sector shows steady 3% growth in Q2 earnings reports",0
+61,"AI startup DeepMind acquired by TechConglomerate for $4.5B",1
+62,"Construction firm BuildRight announces unexpected CEO resignation",-1
+63,"Semiconductor index rises 2% following positive industry forecast",0
+64,"E-commerce platform ShopSphere reports 40% revenue jump",1
+65,"Auto insurer DriveSafe faces class action lawsuit over claim practices",-1
+66,"Federal Reserve announces expected 0.25% rate hike",0
+67,"Biotech firm GeneCure's cancer treatment shows 90% success in trials",1
+68,"Steel manufacturer MetalWorks hit by ransomware attack, production halted",-1
+69,"Consumer confidence index remains steady at 65.2 points",0
+70,"Cloud computing firm DataSky beats earnings estimates by 12%",1
+71,"Fast food chain BurgerHut reports salmonella outbreak at 30 locations",-1
+72,"Industrial production figures show 0.3% monthly increase",0
+73,"Electric vehicle maker VoltAuto unveils 10-minute charging technology",1
+74,"Pharmaceutical distributor MediChain recalls contaminated painkillers",-1
+75,"Housing market report indicates stable prices in major metro areas",0
+76,"Pharma giant MedLife announces breakthrough in Alzheimer's treatment",1
+77,"Airline carrier SkyWays cuts profit forecast amid rising fuel costs",-1
+78,"Central bank keeps interest rates unchanged at 2.5%",0
+79,"Retail chain MegaMart expands into 50 new locations",1
+80,"Tech startup ByteFlow files for bankruptcy after funding falls through",-1
+81,"Oil prices stabilize after OPEC+ agrees to maintain production levels",0
+82,"Biotech firm GeneCure receives FDA approval for new gene therapy",1
+83,"Auto manufacturer MotorLine recalls 100K vehicles over safety concerns",-1
+84,"Banking sector reports steady growth in Q2 deposits",0
+85, "AI startup DeepMindX secures $150M funding for quantum computing research", 1
+86, "Textile manufacturer WeaveCo shuts down two factories amid declining demand", -1
+87, "Currency markets show little movement as dollar holds steady", 0
+88, "Electric scooter company ZoomRide expands to 10 new cities", 1
+89, "Food delivery app QuickBite faces data breach affecting 2M users", -1
+90, "Central bank reports inflation remains within target range", 0
+91, "Semiconductor firm ChipNext unveils 3nm chip production breakthrough", 1
+92, "Airlines cancel flights due to volcanic ash disruption", -1
+93, "Coffee futures trade flat despite Brazil harvest concerns", 0
+94, "Telecom giant ConnectPlus launches nationwide 6G trial", 1
+95, "Auto insurer SafeDrive raises premiums due to increased claims", -1
+96, "Industrial production index shows no change for Q3", 0
+97, "Biotech company VitaCure announces promising cancer drug trial results", 1
+98, "Shipping delays worsen as port workers strike enters second week", -1
+99, "Precious metals market remains stable amid geopolitical tensions", 0
+100, "Space tourism firm StarVoyage completes successful test flight", 1
