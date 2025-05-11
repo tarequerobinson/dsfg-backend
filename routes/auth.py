@@ -18,82 +18,105 @@ from datetime import datetime, timedelta, date
 from functools import wraps
 from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required, JWTManager
 from werkzeug.utils import secure_filename
+import psycopg2
+from sqlalchemy import create_engine
 
 from models.user import User, db
 from models.portfolio import Portfolio
 from models.fst import FST
 from models.transactions import Transactions
 from models.jse_prices import JSE
+from models.stocks import Stocks
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 UPLOAD_FOLDER = "uploads"
 ALLOWED_EXTENSIONS = {'csv'}
 
-def get_filtered_equity_orders():
+def get_filtered_equity_orders(id):
     try:
         # Connect to your PostgreSQL database
-        conn = psycopg2.connect(
-            host="localhost",        # e.g., "localhost"
-            dbname="postgres",    # e.g., "equity_db"
-            user="postgres",
-            password="admin",
-            port="5432"         # default is 5432
-        )
+        # conn = psycopg2.connect(
+        #     host="localhost",        # e.g., "localhost"
+        #     dbname="postgres",    # e.g., "equity_db"
+        #     user="postgres",
+        #     password="admin",
+        #     port="5432"         # default is 5432
+        # )
+
+        db_uri = current_app.config.get("DATABASE_URI")
+        if not db_uri:
+            raise ValueError("DATABASE_URI is not configured in app.")
+
+        engine = create_engine(db_uri)
 
         # Define the SQL query
         query = """
             SELECT 
                 "equity_symbol" AS equity_symbol,
                 "quantity" AS quantity,
-                "transaction_type" AS transaction_type,
-                CASE 
-                    WHEN "order_type" = 'MARKET' THEN "average_fill_price"
-                    WHEN "order_type" = 'LIMIT' THEN "limit_price"
-                END AS value
+                "transaction_type" AS transaction_type
             FROM transactions
-            WHERE "status" = 'FILLED' AND "portfolio_id" = 3;
+            WHERE "status" = 'FILLED' AND "portfolio_id" = %s;
         """
 
-        # Execute the query and load into a DataFrame
-        df = pd.read_sql_query(query, conn)
+        print("This is current_app before: ", current_app)
+        #engine = db.get_engine(current_app)
+        print("This is current_app after: ", current_app)
 
-        stock_names = []
+        # Execute the query and load into a DataFrame
+        df = pd.read_sql_query(query, engine, params=(id,))
+
+
+        stocks = []
 
         for _, row in df.iterrows():
-            print("This is each line: ", row)
+            print("This is the row: ", row)
+            symbol = row['equity_symbol']
+            quantity = row['quantity']
+            txn_type = row['transaction_type']
 
-            if row['equity_symbol'] not in [s[0] for s in stock_names]:
-                stock_names.append([row['equity_symbol'], row["quantity"], 0.0])
+            # Check if stock exists
+            found = False
+            for stock in stocks:
+                if stock[0] == symbol:
+                    found = True
+                    if txn_type == "BUY":
+                        stock[1] += quantity
+                    elif txn_type == "SELL":
+                        stock[1] -= quantity
+                        if stock[1] < 0:
+                            stock[1] = 0.0
+                    break
             
-            if row["transaction_type"] == "BUY":
-                print("They bought something.")
-                for i in stock_names:
-                    if row["equity_symbol"] == i[0]:
-                        i[1] += row["quantity"] 
-            elif row["transaction_type"] == "SELL":
-                print("They sold something.")
-                for i in stock_names:
-                    if row["equity_symbol"] == i[0]:
-                        i[1] -= row["quantity"] 
+            print("This is the new stocks: ", stocks)
+            if not found:
+                # Initialize new stock entry
+                stocks.append([symbol, quantity if txn_type == "BUY" else 0.0])
+        
+        for stock in stocks: 
+            symbol = stock[0]
 
             query = """
-                SELECT 
-                    "name" AS name,
-                    "close_price" AS close_price
-                FROM jse_prices
-                WHERE "symbol" = %s;
-            """
+                    SELECT 
+                        "name" AS name,
+                        "close_price" AS close_price
+                    FROM jse_prices
+                    WHERE "symbol" = %s;
+                """
+            
+            df = pd.read_sql_query(query, engine, params=(symbol,))
+            print("This is df: ", df)
+            #print("This is df: ", df['name'], df['close_price'])
 
-            # Execute the query and load into a DataFrame
-            i[2] = pd.read_sql_query(query, conn, params=(i[0],))
-        
+            for _, row in df.iterrows():
+                print("This is loop: ", row['name'], row['close_price'])
+                stock.append(row["name"])
+                stock.append(row["close_price"])
 
-        print("This is stock names: ", stock_names)
 
-        # Close the connection
-        conn.close()
+        # conn.close()
 
-        return stock_names
+        return stocks
 
     except Exception as e:
         print("Error while connecting to PostgreSQL:", e)
@@ -286,25 +309,25 @@ def login():
             'exp': datetime.utcnow() + timedelta(hours=24)
         }, current_app.config['SECRET_KEY'], algorithm="HS256")
 
-        df = get_all_jse_closing_prices(debug=True)
+        # df = get_all_jse_closing_prices(debug=True)
 
-        if not df.empty:
-            print("This is df: ", df)
+        # if not df.empty:
+        #     print("This is df: ", df)
 
-            JSE.query.delete()
-            db.session.commit()
+        #     JSE.query.delete()
+        #     db.session.commit()
 
-            for _, row in df.iterrows():
-                try:
-                    stocks = JSE(
-                        name = row['Name'], 
-                        symbol = row['Symbol'], 
-                        close_price = row['Close']
-                    )
-                    db.session.add(stocks)
-                except Exception as e:
-                    print(f"Skipping row: {e}")
-            db.session.commit()
+        #     for _, row in df.iterrows():
+        #         try:
+        #             stocks = JSE(
+        #                 name = row['Name'], 
+        #                 symbol = row['Symbol'], 
+        #                 close_price = row['Close']
+        #             )
+        #             db.session.add(stocks)
+        #         except Exception as e:
+        #             print(f"Skipping row: {e}")
+        #     db.session.commit()
         # os.makedirs(UPLOAD_FOLDER, exist_ok=True)
         # filename = secure_filename(file.filename)
         # filepath = os.path.join(UPLOAD_FOLDER, filename)
@@ -426,44 +449,40 @@ def submit():
 
 
 @auth_bp.route('/finance', methods=["GET", "POST"])
-@jwt_required()
-def finance():
-    current_user_id = get_jwt_identity()  # Get the user ID from JWT token
-    
-    df = get_filtered_equity_orders()
+@token_required
+def finance(current_user, user_portfolio):
+    current_user_id = current_user.id  # Get the user ID from JWT token
 
-    print("This is df: ", df)
+    assets = []
+    net_worth = 0.0
     # Fetch user portfolio data
-    portfolio = Portfolio.query.filter_by(user_id=current_user_id).first()
-    if not portfolio:
-        return jsonify({"message": "Portfolio data not found"}), 404
+    stocks = Stocks.query.filter_by(user_id=current_user_id).all()
+    if not stocks:
+        return jsonify({"message": "Stocks data not found"}), 404
+
+    print("This is stocks: ", stocks)
+
+    for stock in stocks:
+        amt = stock.close_price * stock.quantity
+        print("This is stock: ", stock.name, amt)
+        val = {"symbol": stock.symbol, "name": stock.name, "price": stock.close_price, "shares": stock.quantity, "value": amt}
+        assets.append(val)
+
+    print("This is assets: ", assets)
+
 
     # Fetch user financial standing data
-    financial_standing = FST.query.filter_by(user_id=current_user_id).first()
-    if not financial_standing:
-        return jsonify({"message": "Financial standing data not found"}), 404
+    # financial_standing = FST.query.filter_by(user_id=current_user_id).first()
+    # if not financial_standing:
+    #     return jsonify({"message": "Financial standing data not found"}), 404
 
-    # Prepare the data to send back
-    dashboard_data = {
-        "clientPortfolio": {
-            "realEstateValue": portfolio.real_estate_value,
-            "stockValue": portfolio.stock_value,
-            "totalAssets": portfolio.total_value,
-            "liabilities": portfolio.profit_loss,  # Assuming 'profit_loss' refers to liabilities for now
-        },
-        "financialStanding": {
-            "jamaicaPercentile": financial_standing.jam_per,
-            "worldPercentile": financial_standing.world_per,
-            "jamaicaRank": financial_standing.jam_rank,
-            "worldRank": financial_standing.world_rank,
-        }
-    }
+    #Prepare the data to send back
 
-    return jsonify(dashboard_data), 200
+    return jsonify(assets), 200
 
 @auth_bp.route('/display', methods=["GET"])
 @token_required
-def display(current_user):
+def display(current_user, user_portfolio):
     user_id = current_user.id
 
     user = User.query.filter_by(id=user_id).first()
@@ -480,7 +499,7 @@ def display(current_user):
 
 @auth_bp.route('/update', methods=["POST"])
 @token_required
-def update(current_user):
+def update(current_user, user_portfolio):
     current_user_id = current_user.id
     user = User.query.filter_by(id=current_user_id).first()
     if not user: 
@@ -507,7 +526,14 @@ def update(current_user):
 @auth_bp.route('/upload', methods=['POST'])
 @token_required
 def upload_csv(current_user, user_portfolio):
-    portfolio_id = user_portfolio.portfolio_id
+    #portfolio_id = user_portfolio.portfolio_id
+
+    portfolio = Portfolio.query.filter_by(user_id=current_user.id).first()
+    if not portfolio:
+        return jsonify({'error': 'Portfolio not found'}), 404
+    
+    portfolio_id = portfolio.portfolio_id
+    print("This is portfolio id: ", portfolio_id)
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
 
@@ -529,7 +555,6 @@ def upload_csv(current_user, user_portfolio):
                 order = Transactions(
                     portfolio_id=portfolio_id, 
                     order_date=row['ORDER DATE'],
-                    equity_order_no=int(row['EQUITY ORDER NO']),
                     status=row['STATUS'],
                     stock_exchange_code=row['STOCK EXCHANGE CODE'],
                     currency=row['CURRENCY'],
@@ -546,6 +571,31 @@ def upload_csv(current_user, user_portfolio):
             except Exception as e:
                 print(f"Skipping row: {e}")
         db.session.commit()
+
+        df = get_filtered_equity_orders(portfolio_id)
+        print("This is df: ", df)
+
+        for row in df:
+            try:
+                stock = Stocks.query.filter_by(symbol=row[0]).first()
+                if not stock:
+                    order = Stocks(
+                        user_id=current_user.id, 
+                        name=row[2],
+                        symbol=row[0], 
+                        close_price=row[3], 
+                        quantity=int(row[1]),
+                    )
+                    db.session.add(order)
+                    db.session.commit()
+                else:
+                    stock.quantity += int(row[1])
+                    stock.close_price = row[3]
+                    stock.name = row[2]
+                    db.session.commit()
+
+            except Exception as e:
+                print(f"Skipping row: {e}")
 
         return jsonify({'message': f'{filename} uploaded and processed successfully'}), 200
 

@@ -7,7 +7,6 @@ class Transactions(db.Model):
     trans_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     portfolio_id = db.Column(db.Integer, db.ForeignKey('portfolios.portfolio_id'), nullable=False)
     order_date = db.Column(db.Date)
-    equity_order_no = db.Column(db.Integer, unique=True, nullable=False)
     status = db.Column(db.String(50))
     stock_exchange_code = db.Column(db.String(10))
     currency = db.Column(db.String(10))
@@ -22,12 +21,11 @@ class Transactions(db.Model):
     user = db.relationship('Portfolio', backref=db.backref('transactions', lazy=True))
 
 
-    def __init__(self, portfolio_id, order_date, equity_order_no, status, stock_exchange_code, 
+    def __init__(self, portfolio_id, order_date, status, stock_exchange_code, 
                  currency, equity_symbol, order_type, quantity, average_fill_price, estimated_value, 
                  time_in_force, transaction_type, limit_price):
         self.portfolio_id = portfolio_id
         self.order_date = order_date
-        self.equity_order_no = equity_order_no
         self.status = status
         self.stock_exchange_code = stock_exchange_code
         self.currency = currency
@@ -44,7 +42,6 @@ class Transactions(db.Model):
         return {
             "portfolio_id": self.portfolio_id,
             "order_date": self.order_date.isoformat() if self.order_date else None,
-            "equity_order_no": self.equity_order_no,
             "status": self.status,
             "stock_exchange_code": self.stock_exchange_code,
             "currency": self.currency,
