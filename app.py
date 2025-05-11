@@ -14,9 +14,11 @@ load_dotenv()
 from routes.auth import auth_bp
 from routes.main import main_bp
 
+
 def create_app(test_config=None):
     # Create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+
     
     # Enable CORS
     CORS(app)
@@ -30,32 +32,34 @@ def create_app(test_config=None):
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(seconds=int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES', 3600))),
         UPLOAD_FOLDER=os.environ.get('UPLOAD_FOLDER', 'dev')
     )
-    
+
     if test_config is None:
         # Load the instance config, if it exists, when not testing
         app.config.from_pyfile('config.py', silent=True)
     else:
         # Load the test config if passed in
         app.config.from_mapping(test_config)
-    
+
     # Ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
-    
+
+
     # Initialize JWT
     jwt = JWTManager(app)
     
     # Register blueprints
     app.register_blueprint(auth_bp)
     app.register_blueprint(main_bp)
-    
+
     # Initialize database
     from utils.db import init_db
     init_db(app)
-    
+
     return app
+
 
 if __name__ == '__main__':
     app = create_app()
