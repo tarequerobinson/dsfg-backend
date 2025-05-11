@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify
+
+from utils.geminiSentimentModel import analyze_with_gemini
 from utils.sentimentAnalysis import NewsSentimentModel
 import argparse
 
@@ -36,16 +38,21 @@ def analyze_sentiment():
     except Exception as e:
         return jsonify({'error': str(e)}), 400
 
+
 @sentiment_bp.route('/api/batch-analyze', methods=['POST'])
 def batch_analyze():
     try:
         data = request.get_json()
-        if not MODEL:
-            return jsonify({'error': 'Model not loaded'}), 500
-        results = [{
-            'id': item['id'],
-            **MODEL.predict(item['text'])
-        } for item in data['items']]
+        results = []
+
+        for item in data['items']:
+            analysis = analyze_with_gemini(item['text'])
+            results.append({
+                'id': item['id'],
+                'sentiment': analysis['sentiment'],
+                'confidence': analysis['confidence']
+            })
+
         return jsonify({'results': results})
     except Exception as e:
         return jsonify({'error': str(e)}), 400
