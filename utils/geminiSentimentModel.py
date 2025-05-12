@@ -1,27 +1,27 @@
+import json
+
 import google.generativeai as genai
 import os
 
-from charset_normalizer.md import lru_cache
+from functools import lru_cache
 from dotenv import load_dotenv
 from flask import logging
 import logging
+from datetime import datetime
 
 load_dotenv()
 
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"),
-                transport="rest",
-                client_options={"api_endpoint": "generativelanguage.googleapis.com/v1"})
-model = genai.GenerativeModel('gemini-1.0-pro')
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.StreamHandler(),  # Log to terminal
-        logging.FileHandler('sentiment.log')  # Optional: Log to file
+        logging.StreamHandler(),
+        logging.FileHandler('sentiment.log')
     ]
 )
-@lru_cache(maxsize=1000)
 def analyze_with_gemini(text: str) -> dict:
     """
     Analyzes text sentiment using Gemini API
@@ -36,14 +36,20 @@ def analyze_with_gemini(text: str) -> dict:
     Example response: {{"sentiment": 1, "confidence": 0.95}}"""
 
     try:
-        logging.debug(f"Analyzing text: {text[:50]}...")  # Log first 50 chars
+        logging.debug(f"Analyzing text: {text[:50]}...")
         response = model.generate_content(prompt)
         logging.debug(f"Full API response: {response}")
 
-        parsed = eval(response.text)
-        logging.info(f"Analysis result: {parsed} | Processing time: {datetime.now() - start_time}")
+        try:
+            parsed = eval(response.text)
+        except Exception as parse_error:
+            logging.error(f"Failed to parse response: {response.text}")
+            logging.error(f"Parse error: {parse_error}")
+            return {"sentiment": 0, "confidence": 0.0}
 
         return parsed
     except Exception as e:
-        print(f"Gemini API error: {e}")
+        logging.error(f"Gemini API error: {e}")
         return {"sentiment": 0, "confidence": 0.0}
+
+
