@@ -20,7 +20,8 @@ def create_app(test_config=None):
     # Create and configure the app
     app = Flask(__name__, instance_relative_config=True)
 
-    
+
+
     # Enable CORS
     CORS(app)
     
@@ -28,7 +29,7 @@ def create_app(test_config=None):
     app.config.from_mapping(
         SECRET_KEY=os.environ.get('SECRET_KEY', 'dev'),
         #DATABASE_URI=os.environ.get('DATABASE_URI', 'sqlite:///app.db'),
-        DATABASE_URI=os.environ.get('DATABASE_URI', 'postgresql://postgres:admin@localhost/postgres'),
+        DATABASE_URI=os.environ.get('DATABASE_URI', ''),
         DEBUG=os.environ.get('DEBUG', 'False') == 'True',
         JWT_SECRET_KEY=os.environ.get('JWT_SECRET_KEY', os.environ.get('SECRET_KEY', 'dev')),
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(seconds=int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES', 3600))),

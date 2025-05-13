@@ -28,3 +28,4 @@ def protected(current_user):
         'message': 'This is a protected route',
         'user': current_user.to_dict()
     }), 200
+

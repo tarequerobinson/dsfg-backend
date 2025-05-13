@@ -653,3 +653,119 @@ def get_jse_prices(current_user, user_portfolio):
         # Log the error for debugging
         print(f"Error retrieving JSE prices: {e}")
         return jsonify({"message": "Error retrieving JSE prices", "error": str(e)}), 500
+
+@auth_bp.route('/api/auth/upload', methods=['POST'])
+@jwt_required()
+def upload_file():
+    # Verify JWT from header
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or 'Bearer ' not in auth_header:
+        return jsonify({'message': 'Missing authorization token'}), 401
+
+    try:
+        token = auth_header.split(" ")[1]
+        decoded = jwt.decode(token, current_app.config['SECRET_KEY'], algorithms=["HS256"])
+        user_id = decoded['user_id']
+    except Exception as e:
+        return jsonify({'message': 'Invalid token', 'error': str(e)}), 401
+
+    # Check if file exists in request
+    if 'file' not in request.files:
+        return jsonify({'message': 'No file part'}), 400
+
+    file = request.files['file']
+
+    # Validate file
+    if file.filename == '':
+        return jsonify({'message': 'No selected file'}), 400
+
+    if not allowed_file(file.filename):
+        return jsonify({'message': 'Invalid file type'}), 400
+
+    try:
+        # Save file temporarily
+        filename = secure_filename(file.filename)
+        upload_folder = current_app.config['UPLOAD_FOLDER']
+        os.makedirs(upload_folder, exist_ok=True)
+        filepath = os.path.join(upload_folder, filename)
+        file.save(filepath)
+
+        # Process CSV
+        df = pd.read_csv(filepath)
+
+        # Convert date format
+        df['ORDER DATE'] = pd.to_datetime(df['ORDER DATE'], format='%d/%m/%Y').dt.date
+
+        # Get user's portfolio
+        portfolio = Portfolio.query.filter_by(user_id=user_id).first()
+        if not portfolio:
+            return jsonify({'message': 'Portfolio not found'}), 404
+
+        # Process transactions
+        transactions = []
+        for _, row in df.iterrows():
+            transaction = Transactions(
+                portfolio_id=portfolio.portfolio_id,
+                order_date=row['ORDER DATE'],
+                equity_order_no=row['EQUITY ORDER NO'],
+                status=row['STATUS'],
+                stock_exchange_code=row['STOCK EXCHANGE CODE'],
+                currency=row['CURRENCY'],
+                equity_symbol=row['EQUITY SYMBOL'],
+                order_type=row['ORDER TYPE'],
+                quantity=row['QUANTITY'],
+                average_fill_price=row['AVERAGE FILL PRICE'],
+                estimated_value=row['ESTIMATED VALUE'],
+                time_in_force=row['TIME IN FORCE'],
+                transaction_type=row['TRANSACTION TYPE'],
+                limit_price=row['LIMIT PRICE']
+            )
+            transactions.append(transaction)
+
+        # Bulk save transactions
+        db.session.bulk_save_objects(transactions)
+
+        # Update stock holdings
+        processed_symbols = set()
+        for transaction in transactions:
+            if transaction.status == 'FILLED' and transaction.equity_symbol not in processed_symbols:
+                stock = Stocks.query.filter_by(
+                    user_id=user_id,
+                    symbol=transaction.equity_symbol
+                ).first()
+
+                if stock:
+                    # Update existing stock
+                    stock.quantity += transaction.quantity
+                else:
+                    # Create new stock entry
+                    stock = Stocks(
+                        user_id=user_id,
+                        symbol=transaction.equity_symbol,
+                        quantity=transaction.quantity,
+                        # You might want to add more fields from JSE data
+                    )
+                    db.session.add(stock)
+
+                processed_symbols.add(transaction.equity_symbol)
+
+        db.session.commit()
+        os.remove(filepath)  # Clean up temp file
+
+        return jsonify({
+            'message': 'File processed successfully',
+            'transactions_added': len(transactions)
+        }), 200
+
+    except Exception as e:
+        db.session.rollback()
+        if os.path.exists(filepath):
+            os.remove(filepath)
+        return jsonify({
+            'message': 'Error processing file',
+            'error': str(e)
+        }), 500
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in {'csv'}
