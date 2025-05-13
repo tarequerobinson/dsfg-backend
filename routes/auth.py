@@ -226,7 +226,8 @@ def token_required(f):
             try:
                 token = auth_header.split(" ")[1]
             except IndexError:
-                return jsonify({'message': 'Token is missing!'}), 401
+                return jsonify({'message': 'Token is misplaced!'}), 401
+                print("This is token: ", token)
         
         if not token:
             return jsonify({'message': 'Token is missing!'}), 401
@@ -381,8 +382,8 @@ def get_user_profile(current_user):
 
 @auth_bp.route('/submit', methods=['POST'])
 @token_required
-def submit():
-    user_id = g.current_user
+def submit(current_user, user_portfolio):
+    user_id = current_user.id
     
     if not user_id:
         return jsonify({"message": "User ID not found in token"}), 401
@@ -464,11 +465,30 @@ def finance(current_user, user_portfolio):
 
     for stock in stocks:
         amt = stock.close_price * stock.quantity
+        net_worth += amt
         print("This is stock: ", stock.name, amt)
         val = {"symbol": stock.symbol, "name": stock.name, "price": stock.close_price, "shares": stock.quantity, "value": amt}
         assets.append(val)
 
     print("This is assets: ", assets)
+    print("This is net_worth: ", net_worth)
+
+    portfolio = Portfolio.query.filter_by(user_id=current_user_id).first()
+    print("This is portfolio stock value: ", portfolio.stock_value)
+    #print("This is their sum:", net_worth + portfolio.stock_value)
+
+    netWorth = net_worth + portfolio.stock_value
+
+    portfolio.stock_value = net_worth
+    db.session.commit()
+
+    final_val = {"netWorth": net_worth}
+
+    dashboard_data = {
+        "assets": assets,
+        "netWorth": final_val
+    }
+    
 
 
     # Fetch user financial standing data
@@ -478,7 +498,7 @@ def finance(current_user, user_portfolio):
 
     #Prepare the data to send back
 
-    return jsonify(assets), 200
+    return jsonify(dashboard_data), 200
 
 @auth_bp.route('/display', methods=["GET"])
 @token_required
@@ -577,7 +597,7 @@ def upload_csv(current_user, user_portfolio):
 
         for row in df:
             try:
-                stock = Stocks.query.filter_by(symbol=row[0]).first()
+                stock = Stocks.query.filter_by(symbol=row[0], user_id=current_user.id).first()
                 if not stock:
                     order = Stocks(
                         user_id=current_user.id, 
@@ -601,3 +621,35 @@ def upload_csv(current_user, user_portfolio):
 
     return jsonify({'error': 'Invalid file type'}), 400
 
+@auth_bp.route('/jse-prices', methods=['GET'])
+@token_required
+def get_jse_prices(current_user, user_portfolio):
+    """
+    Retrieve all JSE price data from the database
+    
+    Returns:
+        JSON response with list of all JSE prices
+    """
+    try:
+        # Query all records from JSE table
+        jse_prices = JSE.query.all()
+        
+        if not jse_prices:
+            return jsonify({"message": "No JSE price data found"}), 404
+        
+        # Format the data for the response
+        prices_data = []
+        for price in jse_prices:
+            prices_data.append({
+                "id": price.stock_id,
+                "name": price.name,
+                "symbol": price.symbol,
+                "close_price": price.close_price
+            })
+        
+        return jsonify({"jse_prices": prices_data}), 200
+    
+    except Exception as e:
+        # Log the error for debugging
+        print(f"Error retrieving JSE prices: {e}")
+        return jsonify({"message": "Error retrieving JSE prices", "error": str(e)}), 500

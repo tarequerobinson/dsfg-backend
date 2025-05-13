@@ -27,7 +27,8 @@ def create_app(test_config=None):
     # Load configuration
     app.config.from_mapping(
         SECRET_KEY=os.environ.get('SECRET_KEY', 'dev'),
-        DATABASE_URI=os.environ.get('DATABASE_URI', 'sqlite:///app.db'),
+        #DATABASE_URI=os.environ.get('DATABASE_URI', 'sqlite:///app.db'),
+        DATABASE_URI=os.environ.get('DATABASE_URI', 'postgresql://postgres:admin@localhost/postgres'),
         DEBUG=os.environ.get('DEBUG', 'False') == 'True',
         JWT_SECRET_KEY=os.environ.get('JWT_SECRET_KEY', os.environ.get('SECRET_KEY', 'dev')),
         JWT_ACCESS_TOKEN_EXPIRES=timedelta(seconds=int(os.environ.get('JWT_ACCESS_TOKEN_EXPIRES', 3600))),
