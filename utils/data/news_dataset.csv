@@ -1,0 +1,304 @@
+id,text,sentiment
+1,"Tech giant unveils AI-powered healthcare device, improving diagnostic accuracy by 40%.",1
+2,"Massive oil spill devastates marine ecosystem, threatening endangered species.",-1
+3,"Government announces new internet access initiative for rural communities; details pending.",0
+4,"Corruption scandal triggers protests and resignation demands.",-1
+5,"Vertical farming project doubles crop yields; environmental impact under review.",0
+6,"Cybersecurity breach exposes data of 10 million users.",-1
+7,"Tourism revenue hits record levels, boosting coastal economies.",1
+8,"Automotive plant closure leaves 2,000 unemployed; retraining programs announced.",0
+9,"Literacy program reduces school dropout rates by 25%.",1
+10,"New COVID-19 variant spreads rapidly; severity under investigation.",0
+11,"Moon mission discovers water, enabling future colonization efforts.",1
+12,"Transportation strike halts deliveries; negotiations resume next week.",0
+13,"Pharmaceutical firm recalls medication due to contamination risks.",-1
+14,"Solar farm launches, powering 50,000 homes with clean energy.",1
+15,"Inflation hits 15-year high; central bank reviews policies.",0
+16,"Charity distributes 1 million meals to drought-affected regions.",1
+17,"Airline industry reports $4 billion loss; restructuring plans underway.",0
+18,"Smart traffic system cuts commute times by 20%.",1
+19,"Clashes between protesters and police result in fatalities.",-1
+20,"Solid-state battery breakthrough enables faster EV charging.",1
+21,"Retailers report strong holiday sales; e-commerce dominates.",1
+22,"Poaching crisis endangers rhinoceros population.",-1
+23,"Global treaty phases out single-use plastics by 2030.",1
+24,"Social media platform fined $2 billion for privacy violations.",-1
+25,"Urban green spaces expand by 15%; long-term benefits debated.",0
+26,"Faulty medical devices prompt nationwide recall.",-1
+27,"Telehealth adoption reaches 80% in rural areas.",1
+28,"Trade tariffs escalate; economic impact uncertain.",0
+29,"New sports complex opens with free training programs.",1
+30,"Fraud scheme drains $100 million from pension funds.",-1
+31,"Local government launches free vocational training program for unemployed youth, receiving widespread praise.",1
+32,"Chemical plant leak contaminates river, affecting drinking water for 5 towns.",-1
+33,"National weather service issues advisory for upcoming thunderstorms; no evacuations ordered.",0
+34,"Breakthrough in Alzheimer's research identifies potential treatment to slow cognitive decline.",1
+35,"Major retail chain faces boycott after discriminatory hiring practices are exposed.",-1
+36,"International space station crew completes routine maintenance; mission extension under review.",0
+37,"Solar-powered irrigation system boosts agricultural output in drought-prone regions by 60%.",1
+38,"Contaminated baby formula recall expands to 12 countries amid health concerns.",-1
+39,"Post office announces new parcel tracking system; implementation begins Q3 2026.",0
+40,"Community-led reforestation project restores 10,000 acres of degraded land.",1
+41,"Celebrity-endorsed cryptocurrency scheme collapses, wiping out $200M in investor savings.",-1
+42,"Transportation department proposes new bike lane network; public feedback period opens.",0
+43,"AI-assisted early cancer detection system achieves 98% accuracy in clinical trials.",1
+44,"Factory farm investigation reveals widespread animal cruelty violations.",-1
+45,"National museum acquires rare artifact; exhibition dates to be announced.",0
+46,"Disaster response drones reduce rescue times by 40% in flood-affected areas.",1
+47,"Social media app linked to teen depression spikes in mental health ER visits.",-1
+48,"Coffee chain introduces biodegradable cups; cost impact analysis pending.",0
+49,"Free school meal program reduces childhood malnutrition rates by 35%.",1
+50,"Industrial fishing trawler accused of illegal overfishing in protected marine zone.",-1
+51,"Library system extends operating hours; new book acquisition budget unchanged.",0
+52,"Gene-editing therapy eradicates hereditary disease in first human trial.",1
+53,"E-commerce warehouse fire destroys $50M worth of goods; arson suspected.",-1
+54,"Rail network upgrades announced; completion expected by 2028.",0
+55,"Mobile app connects surplus restaurant food with homeless shelters, cutting waste by 70%.",1
+56,"Pharmaceutical price gouging leaves chronic illness patients unable to afford medication.",-1
+57,"New airport security scanners installed; passenger testing phase begins.",0
+58,"Robotic prosthetics now covered by national healthcare, benefiting 100,000 amputees.",1
+59,"Oil company ignored safety warnings prior to catastrophic pipeline rupture.",-1
+60,"Urban development committee approves skyscraper project; environmental review ongoing.",0
+61,"Government approves universal healthcare expansion, covering 2 million uninsured citizens.",1
+62,"Factory explosion kills 12 workers; safety violations cited as cause.",-1
+63,"New public park construction begins; completion scheduled for late 2027.",0
+64,"AI-powered tutoring platform improves student test scores by 25% nationwide.",1
+65,"Banking scandal reveals $500M embezzlement scheme, triggering mass account closures.",-1
+66,"National census data collection underway; results expected in 2026.",0
+67,"Anti-malaria vaccine reduces child mortality rates by 60% in rural regions.",1
+68,"Wildlife trafficking ring dismantled, saving 200 endangered animals from poachers.",1
+69,"Controversial tax reform bill passes first reading; amendments debated.",0
+70,"Food delivery app accused of exploiting gig workers with sub-minimum wages.",-1
+71,"Breakthrough in carbon capture tech removes 90% of emissions from coal plants.",1
+72,"Social media outage disrupts global communications for 8 hours.",-1
+73,"High-speed rail project delayed due to land acquisition disputes.",0
+74,"Free mental health hotline launches, serving 10,000 callers in first month.",1
+75,"Chemical fertilizer ban enacted to protect groundwater quality.",1
+76,"Major airline cancels 500 flights amid pilot strike.",-1
+77,"New national monument designation proposed for historic site.",0
+78,"Community kitchens slash food waste by repurposing 80% of unused ingredients.",1
+79,"Fake news campaign linked to election interference in 3 states.",-1
+80,"Smartwatch manufacturer recalls faulty devices due to overheating risks.",-1
+81,"Ocean cleanup initiative removes 1,000 tons of plastic from Pacific gyre.",1
+82,"Tech startup lays off 30% of staff amid funding shortages.",-1
+83,"International trade agreement negotiations enter final phase.",0
+84,"Low-cost insulin production cuts prices by 70% for diabetic patients.",1
+85,"Illegal logging operation destroys 5,000 acres of protected rainforest.",-1
+86,"City council votes to install 500 EV charging stations by 2025.",1
+87,"Contaminated seafood linked to hospitalization of 150 people.",-1
+88,"New recycling guidelines published; enforcement begins next year.",0
+89,"Crowdfunded library opens, providing free books to 20,000 residents.",1
+90,"Factory farm fined $10M for illegal waste dumping in protected wetlands.",-1
+91,"Breakthrough recycling tech converts plastic waste into clean fuel with 95% efficiency.",1
+92,"Toxic algae bloom kills marine life across 200-mile coastal stretch.",-1
+93,"New national park visitor center announced; groundbreaking ceremony set.",0
+94,"Ransomware attack cripples hospital systems, delaying critical surgeries.",-1
+95,"Urban farm initiative launches pilot program; impact study pending.",0
+96,"Free coding bootcamps equip 5,000 low-income students with tech skills.",1
+97,"Factory whistleblower reveals systematic dumping of toxic waste into wetlands.",-1
+98,"Satellite constellation deployment delayed by solar storm interference.",0
+99,"AI-powered wildfire detection system prevents 15 forest fires in drought season.",1
+100,"Child labor violations found at overseas garment factory supplying major brands.",-1
+101,"Highway expansion project enters environmental assessment phase.",0
+102,"Community solar co-op slashes energy bills for 10,000 households.",1
+103,"Faulty bridge design blamed for catastrophic collapse during rush hour.",-1
+104,"National archives digitization project reaches 50% completion.",0
+105,"Experimental malaria vaccine shows 100% efficacy in Phase III trials.",1
+106,"Illegal mining operation poisons indigenous community's water supply.",-1
+107,"New air traffic control software rollout begins; training ongoing.",0
+108,"Mobile clinics provide free diabetes screenings to remote villages.",1
+109,"Data breach exposes biometric records of 25 million smartphone users.",-1
+110,"Coastal erosion mitigation strategy draft released for public comment.",0
+111,"Robotic bees successfully pollinate crops amid insect population collapse.",1
+112,"Chemical company falsified safety reports before toxic gas leak.",-1
+113,"Electric grid modernization proposal passes committee vote.",0
+114,"Open-source AI model democratizes cancer diagnosis for developing nations.",1
+115,"Black market medication ring linked to 50 overdose deaths.",-1
+116,"International astronomy conference convenes; new telescope specs unveiled.",0
+117,"Vertical axis wind turbines increase renewable output by 40% in cities.",1
+118,"Neglected dam infrastructure fails during floods, displacing 15,000 residents.",-1
+119,"Smart city sensor network installation reaches halfway mark.",0
+120,"Gene bank preserves 1 million crop varieties against climate threats.",1
+121,"Hospital understaffing leads to patient deaths amid emergency care delays.",-1
+122,"Toxic landfill fire releases hazardous fumes, forcing school closures.",-1
+123,"Housing crisis worsens as rent prices surge 30% in urban centers.",-1
+124,"Widespread power outages leave 500,000 residents without electricity during heatwave.",-1
+125,"Military coup destabilizes government; state of emergency declared.",-1
+126,"Data breach at tax authority compromises personal records of millions.",-1
+127,"Deadly flood destroys entire village; rescue efforts hampered by debris.",-1
+128,"Terrorist bombing at marketplace kills 22, injures dozens.",-1
+129,"Food bank shortages leave thousands without access to meals.",-1
+130,"Police brutality case sparks outrage after video shows excessive force.",-1
+131,"Toxic pesticide linked to spike in cancer cases among farm workers.",-1
+132,"Refugee camp hit by cholera outbreak; medical aid delayed.",-1
+133,"Collapsed bridge exposes years of neglected infrastructure maintenance.",-1
+134,"Illegal deforestation displaces indigenous tribes and wildlife.",-1
+135,"Government corruption scandal diverts disaster relief funds.",-1
+136,"Factory fire emits carcinogenic smoke; nearby communities evacuated.",-1
+137,"Prison riot results in 12 deaths and dozens injured.",-1
+138,"Phishing scam targets pensioners, stealing millions in life savings.",-1
+139,"Air pollution levels exceed safe limits in all major cities.",-1
+140,"Border conflict escalates into violent clashes, displacing families.",-1
+141,"Major airline fined for systemic racial discrimination against employees.",-1
+142,"Unregulated mining site collapses, killing 18 workers.",-1
+143,"Contaminated groundwater traced to illegal waste dumping by chemical plant.",-1
+144,"Hospital systems paralyzed by cyberattack; patients rerouted statewide.",-1
+145,"Welfare fraud ring siphons millions from government aid programs.",-1
+146,"Animal shelter overcrowding crisis leads to mass euthanasia.",-1
+147,"Drug-resistant bacteria outbreak spreads in regional hospitals.",-1
+148,"Pipeline explosion destroys homes; cause linked to ignored safety inspections.",-1
+149,"Blackout during heatwave causes deaths in elderly care homes.",-1
+150,"Government accused of suppressing report on rising child malnutrition.",-1
+151,"City council reviews transportation budget for the upcoming fiscal year.",0
+152,"Weather agency forecasts scattered showers across northern parishes this weekend.",0
+153,"Minister of education to address school infrastructure in press briefing.",0
+154,"Local grocery chain announces new store hours effective next Monday.",0
+155,"Annual trade expo opens with exhibitors from 40 countries.",0
+156,"Construction resumes on delayed airport terminal project.",0
+157,"Government launches survey on public transit satisfaction.",0
+158,"Court schedules hearing for ongoing land dispute case.",0
+159,"Ministry of Health releases updated dietary guidelines.",0
+160,"New bill on renewable energy incentives enters consultation phase.",0
+161,"Community forum held to discuss urban development plan.",0
+162,"Public library introduces digital card system for online borrowing.",0
+163,"Parliament debates proposed amendments to traffic regulations.",0
+164,"Statistics office releases national birth rate figures for 2024.",0
+165,"New ferry service trial begins between key coastal towns.",0
+166,"National airline adjusts baggage policy for domestic flights.",0
+167,"New cultural center opens with week-long celebration schedule.",0
+168,"Local university updates admissions criteria for science programs.",0
+169,"Mayor to deliver State of the City address next Tuesday.",0
+170,"Ministry of Agriculture publishes quarterly crop report.",0
+171,"Telecom provider announces phased rollout of 5G service.",0
+172,"Public utilities commission reviews recent power billing concerns.",0
+173,"New driver's license design to be implemented starting August.",0
+174,"City announces garbage collection changes due to holiday.",0
+175,"Transportation authority launches feedback portal for commuters.",0
+176,"Election commission tests new electronic voting machines.",0
+177,"International student exchange program reopens after two-year pause.",0
+178,"Census bureau begins training field workers for upcoming survey.",0
+179,"Post office resumes Saturday deliveries in rural districts.",0
+180,"Local market vendors attend workshop on digital payment systems.",0
+181,"National literacy initiative helps 15,000 adults earn high school diplomas.",1
+182,"Public hospital completes major renovation, adding 200 new beds.",1
+183,"Young entrepreneurs awarded grants to launch green startups.",1
+184,"Clean water access restored to drought-hit rural communities.",1
+185,"Women-led cooperative triples income through local craft exports.",1
+186,"New scholarship fund supports STEM education for low-income students.",1
+187,"City-wide vaccination campaign achieves 95% coverage in two weeks.",1
+188,"Community policing initiative reduces local crime rates by 30%.",1
+189,"Electric bus fleet expansion slashes urban emissions by half.",1
+190,"Renewable energy jobs rise by 20% across the country.",1
+191,"Public art project transforms neglected spaces into vibrant murals.",1
+192,"High school robotics team wins international innovation award.",1
+193,"Government housing program provides 5,000 new affordable homes.",1
+194,"Digital inclusion project connects 50,000 homes to high-speed internet.",1
+195,"Youth mentorship program leads to record high graduation rates.",1
+196,"Elderly care program increases home visit services by 60%.",1
+197,"Public-private partnership builds new children's hospital in record time.",1
+198,"Recycling drive collects 2 million plastic bottles in one month.",1
+199,"Local startup launches solar-powered water purification system.",1
+200,"National coral restoration effort revives 80% of damaged reef area.",1
+201,"New health app helps patients manage chronic conditions more effectively.",1
+202,"Reforestation initiative plants 500,000 trees in degraded forest zones.",1
+203,"Startup secures funding to develop affordable solar cooking solutions.",1
+204,"Free digital literacy workshops empower seniors to navigate technology.",1
+205,"Volunteers clean 20 kilometers of coastline during annual beach drive.",1
+206,"Low-income families receive energy-efficient appliances at no cost.",1
+207,"City's clean air program reduces pollution-related ER visits by 35%.",1
+208,"Women’s shelter expands services, doubling housing capacity.",1
+209,"Tech incubator supports 100 local startups with mentorship and resources.",1
+210,"Mobile blood donation units increase donor turnout by 40%.",1
+211,"New wildlife sanctuary opens, protecting endangered bird species.",1
+212,"Art therapy program improves mental health outcomes for teens.",1
+213,"Government program restores access to education for 10,000 displaced students.",1
+214,"Digital tax filing system cuts processing time by 70%.",1
+215,"Public-private partnership upgrades 1,000 rural schools.",1
+216,"Job readiness program sees 80% of participants employed within 6 months.",1
+217,"Mass transit upgrade improves accessibility for persons with disabilities.",1
+
+218,"Government updates ID card design; rollout scheduled for next year.",0
+219,"Public consultation launched for proposed zoning regulation changes.",0
+220,"Weather agency issues heat advisory for weekend; no severe alerts expected.",0
+221,"City planners present revised blueprint for downtown redevelopment.",0
+222,"New library branch opens; standard services now available.",0
+223,"Municipal council votes to review street vendor licensing rules.",0
+224,"High court to hear appeal on building permit dispute next month.",0
+225,"Utility company schedules routine water maintenance this Thursday.",0
+226,"Telecom firm releases Q2 customer service performance report.",0
+227,"Police department updates policy manual following internal audit.",0
+228,"Cultural ministry sets date for national heritage conference.",0
+229,"Post office adds new drop box locations across residential areas.",0
+230,"Health ministry finalizes draft of updated food safety regulations.",0
+231,"Tourism board reports steady visitor numbers for July.",0
+232,"Regional education summit opens with keynote on digital learning.",0
+233,"Parliament passes budget for upcoming fiscal year.",0
+234,"City to test smart meter pilot program in two neighborhoods.",0
+
+235,"Toxic waste dump sparks health concerns in nearby village.",-1
+236,"Unauthorized dam construction disrupts river ecosystem.",-1
+237,"Police under investigation for excessive use of force during protests.",-1
+238,"Unemployment rises as textile factory shuts down operations.",-1
+239,"Slum fire leaves 150 families homeless; emergency aid slow to arrive.",-1
+240,"Government delays promised housing subsidies amid budget shortfall.",-1
+241,"Illegal sand mining destroys mangrove habitat.",-1
+242,"Leaked documents reveal illegal surveillance of journalists.",-1
+243,"Inmates riot over prison conditions; facility placed on lockdown.",-1
+244,"Food contamination scare triggers recall of frozen meals.",-1
+245,"Oil spill cleanup criticized for lack of transparency.",-1
+246,"Wildfire containment efforts hampered by equipment shortages.",-1
+247,"Data privacy watchdog fines telecom firm for security lapses.",-1
+248,"Waterborne illness outbreak linked to aging pipeline system.",-1
+249,"Transport union strike causes major commuter delays.",-1
+250,"Overcrowded shelters report lack of funding and staff.",-1
+251,"Construction firm fined for safety violations after crane collapse.",-1
+252,"Rural electrification project lights up 30,000 homes for the first time.",1
+253,"Mobile learning app helps 50,000 students continue studies during school closures.",1
+254,"Organic farming initiative boosts local food production and income.",1
+255,"Public transport discounts ease cost burden for low-income commuters.",1
+256,"Nation's literacy rate reaches all-time high of 95%.",1
+257,"Health volunteers deliver 1 million vaccines in remote regions.",1
+258,"Scholarship program supports 2,000 girls in STEM fields.",1
+259,"Community broadband project connects 10 underserved villages.",1
+260,"Emergency response unit reduces disaster recovery time by 60%.",1
+261,"Urban gardening program improves food access and community wellbeing.",1
+262,"Clean cookstove initiative improves indoor air quality for 100,000 families.",1
+263,"Job fair connects 5,000 unemployed youths with hiring companies.",1
+264,"Mobile wallet app improves access to banking in rural communities.",1
+265,"Electric ferry cuts transport emissions by 80% across the bay.",1
+266,"Wildlife rehabilitation center reintroduces endangered species to natural habitat.",1
+267,"Public pension reform increases monthly benefits for retirees.",1
+268,"Mobile recycling units deployed across urban neighborhoods.",1
+269,"Youth sports grant supports 300 community teams with equipment.",1
+270,"New maternity ward opens with state-of-the-art neonatal care.",1
+271,"Open data portal boosts transparency in government spending.",1
+272,"Vaccination campaign achieves near-total eradication of polio regionally.",1
+273,"Affordable housing pilot completes first 1,000 units.",1
+274,"Remote work initiative cuts urban traffic congestion by 40%.",1
+275,"Legislative committee reviews amendments to civil service pensions.",0
+276,"Weather bureau releases monthly rainfall summary report.",0
+277,"Ministry of Transport updates public bus schedule.",0
+278,"Annual budget discussions begin in parliament next week.",0
+279,"Public comment period opens for proposed river cleanup policy.",0
+280,"Electricity provider announces tariff adjustment effective October.",0
+281,"Education board approves new uniform policy for primary schools.",0
+282,"Tourism ministry launches updated visitor website.",0
+283,"Fire department installs new hydrants in 5 districts.",0
+284,"Library digitizes 10,000 historical documents for public access.",0
+285,"Public health team conducts routine market inspections.",0
+286,"Postal service introduces new parcel tracking options.",0
+287,"New software update released for government tax platform.",0
+288,"Environmental agency to hold quarterly town hall meetings.",0
+289,"Toxic gas leak from abandoned mine hospitalizes 12 residents.",-1
+290,"Court ruling reveals decades of misused disaster relief funds.",-1
+291,"Veterinary drug shortage threatens livestock health in rural areas.",-1
+292,"Flash floods displace hundreds; aid workers struggle to access region.",-1
+293,"Overcrowded classrooms hamper learning across primary schools.",-1
+294,"Whistleblower exposes unethical testing at pharmaceutical lab.",-1
+295,"Forest fire destroys 3,000 acres and displaces wildlife.",-1
+296,"Train derailment causes delays and minor injuries to passengers.",-1
+297,"Data breach at university compromises student and faculty records.",-1
+298,"Electric grid overload leaves towns without power for 12 hours.",-1
+299,"Food vendor shutdowns increase after series of hygiene violations.",-1
+300,"Municipal corruption scandal delays flood control project.",-1
+301,"Illegal wildlife trade persists despite new enforcement task force.",-1
